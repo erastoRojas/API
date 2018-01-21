@@ -21,29 +21,24 @@
     <body>
             
         <div class="container">
-            <h1>API BUS</h1> 
+            <h1>Ruta: ${nombreParada}</h1> 
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Nº Parada</th>
-                        <th>Inicio</th>
-                        <th>Fin</th>
+                        <th>Segundos restantes</th>
+                        <th>Distancia</th>
                     </tr>
                 </thead>
                 <tbody>
                 <c:forEach items="${paradas}" var="parada"> 
-                    <tr onclick="location='http://localhost:8080/API/apiBus?op=verParadas&parada=${parada.line}&nParada=${parada.label}'" style="cursor:pointer">
+                    <tr onclick="location='http://localhost:8080/API/apiBus?'" style="cursor:pointer">
                         <td>
-                            ${parada.label}
+                            ${parada.busTimeLeft}
                         </td> 
                         <td>
-                            ${parada.nameA}
-                        </td>
-
-                        <td>
-                            ${parada.nameB}
-                        </td>
-
+                            ${parada.busDistance}
+                        </td> 
+                    </tr>
                 </c:forEach> 
                 </tbody>            
             </table>

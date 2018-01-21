@@ -1,31 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Servlet;
 
+import Utils.Constantes;
 import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.UrlEncodedContent;
-import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.GenericJson;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.ArrayMap;
 import com.google.api.client.util.GenericData;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import servicios.apiServicios;
 
 /**
  *
@@ -38,63 +24,57 @@ public class ApiBus extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-        JsonFactory JSON_FACTORY = new JacksonFactory();
-        HttpRequestFactory requestFactory
-          = HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
-              @Override
-              public void initialize(HttpRequest request) {
-                  request.setParser(new JsonObjectParser(JSON_FACTORY));
-              }
-          });
-        
+        apiServicios as = new apiServicios(); 
+        GenericData data = new GenericData();
         String op = request.getParameter("op");
         
         if(op != null){
             
-            String parada = request.getParameter("parada");
+            switch(op){
+                
+                case("verParadas"):
             
-            GenericUrl url = new GenericUrl("https://openbus.emtmadrid.es:9443/emt-proxy-server/last/bus/GetRouteLines.php");
-            GenericData data = new GenericData();
-            data.put("idClient", "WEB.SERV.loginnavidad@gmail.com");
-            data.put("passKey", "B573104A-F864-4064-8083-E633F60BD8D2");
-            data.put("SelectDate","19/01/2018");
-            data.put("Lines",parada);
-            
-            HttpRequest requestGoogle = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
-
-            GenericJson json = requestGoogle.execute().parseAs(GenericJson.class);
-
-            ArrayList stops = (ArrayList) json.get("resultValues");
-           
-            request.setAttribute("paradas", stops);
-            
-            request.getRequestDispatcher("mostrarParadas.jsp").forward(request, response);
+                    String parada = request.getParameter("parada");
+                    String nParada = request.getParameter("nParada");
+                    
+                    GenericUrl url = new GenericUrl(Constantes.URL_PARADAS);
+                    GenericJson json = as.requestGoogle(url,as.dataParadas(parada));
+                    
+                    ArrayList stops = (ArrayList) json.get("resultValues");
+                    
+                    request.setAttribute("nParada", nParada);
+                    request.setAttribute("paradas", stops);
+                    request.getRequestDispatcher("mostrarParadas.jsp").forward(request, response);
+                    
+                    break;
+                
+                case("verMinutos"):
+                    
+                    String idParada = request.getParameter("idParada");
+                    String nombreParada = request.getParameter("nombreParada");
+                    
+                    url = new GenericUrl(Constantes.URL_TIEMPO);
+                    json = as.requestGoogle(url,as.dataTiempo(idParada));
+                    
+                    stops = (ArrayList) json.get("arrives");
+                    
+                    request.setAttribute("paradas", stops);
+                    request.setAttribute("nombreParada", nombreParada);
+                    request.getRequestDispatcher("mostrarMinutos.jsp").forward(request, response);
+                    
+                    break;
+            }
 
         }else{
-            GenericUrl url = new GenericUrl("https://openbus.emtmadrid.es:9443/emt-proxy-server/last/bus/GetListLines.php");
-
-            GenericData data = new GenericData();
-            data.put("idClient", "WEB.SERV.loginnavidad@gmail.com");
-            data.put("passKey", "B573104A-F864-4064-8083-E633F60BD8D2");
-            data.put("SelectDate","19/01/2018");
-
-            HttpRequest requestGoogle = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
-
-            GenericJson json = requestGoogle.execute().parseAs(GenericJson.class);
-
+            GenericUrl url = new GenericUrl(Constantes.URL_LINEAS);
+            GenericJson json = as.requestGoogle(url,as.dataLineas());
+            
             ArrayList stops = (ArrayList) json.get("resultValues");
            
             request.setAttribute("paradas", stops);
-            
             request.getRequestDispatcher("vista.jsp").forward(request, response);
-        }
-    
-        
+        } 
     }
-    
-    
-    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
