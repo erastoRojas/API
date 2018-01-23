@@ -33,10 +33,30 @@
                 <c:forEach items="${paradas}" var="parada"> 
                     <tr onclick="location='http://localhost:8080/API/apiBus?'" style="cursor:pointer">
                         <td>
-                            ${parada.busTimeLeft}
+                            
+                        <script>
+                            var segundos = '<c:out value="${parada.busTimeLeft}"/>';
+                        
+                            if((segundos/60) > 60){
+                                document.write("+60 min"); 
+                            
+                            }else if(segundos > 10){
+                                var d=new Date(segundos*1000);
+                                var hora = (d.getHours()==0)?23:d.getHours()-1;
+                                var hora = (hora<9)?"0"+hora:hora;
+                                var minuto = (d.getMinutes()<9)?"0"+d.getMinutes():d.getMinutes();
+                                var segundo = (d.getSeconds()<9)?"0"+d.getSeconds():d.getSeconds();
+                              
+                              
+                                document.write(minuto+":"+segundo+" min"); 
+                            }else{
+                                document.write(segundos+" seg"); 
+                            }
+                        </script>
+       
                         </td> 
                         <td>
-                            ${parada.busDistance}
+                            ${parada.busDistance} m
                         </td> 
                     </tr>
                 </c:forEach> 
