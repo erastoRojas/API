@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package servicios;
 
+import Utils.Constantes;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -18,6 +14,10 @@ import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.GenericData;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import static javax.ws.rs.client.Entity.json;
 
 /**
@@ -28,6 +28,7 @@ public class apiServicios {
     
     HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     JsonFactory JSON_FACTORY = new JacksonFactory();
+    
     HttpRequestFactory requestFactory
           = HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
               @Override
@@ -35,37 +36,49 @@ public class apiServicios {
                   request.setParser(new JsonObjectParser(JSON_FACTORY));
               }
           });
-    GenericData data = new GenericData();
+    
+    public GenericData data = new GenericData();
+    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+    Date today = Calendar.getInstance().getTime();
+    public String reportDate = df.format(today);
 
-    public GenericJson requestGoogle(GenericUrl url, GenericData data) throws IOException {
+    public GenericJson dataParadas(String parada) throws IOException {
+        
+        data.put("idClient", "WEB.SERV.loginnavidad@gmail.com");
+        data.put("passKey", "B573104A-F864-4064-8083-E633F60BD8D2");
+        data.put("SelectDate",reportDate);
+        data.put("Lines",parada);
+        
+        GenericUrl url = new GenericUrl(Constantes.URL_PARADAS);
         HttpRequest requestGoogle = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
         GenericJson json = requestGoogle.execute().parseAs(GenericJson.class);
+
         return json;
     }
 
-    public GenericData dataParadas(String parada) throws IOException {
-        data.put("idClient", "WEB.SERV.loginnavidad@gmail.com");
-        data.put("passKey", "B573104A-F864-4064-8083-E633F60BD8D2");
-        data.put("SelectDate","19/01/2018");
-        data.put("Lines",parada);
-
-        return data;
-    }
-
-    public GenericData dataTiempo(String idParada) {
+    public GenericJson dataTiempo(String idParada) throws IOException {
+            
         data.put("idClient", "WEB.SERV.loginnavidad@gmail.com");
         data.put("passKey", "B573104A-F864-4064-8083-E633F60BD8D2");
         data.put("idStop",idParada);
         
-        return data;
+        GenericUrl url = new GenericUrl(Constantes.URL_TIEMPO);
+        HttpRequest requestGoogle = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
+        GenericJson json = requestGoogle.execute().parseAs(GenericJson.class);
+        
+        return json;
     }
 
-    public GenericData dataLineas() {
+    public GenericJson dataLineas() throws IOException {
+        
         data.put("idClient", "WEB.SERV.loginnavidad@gmail.com");
         data.put("passKey", "B573104A-F864-4064-8083-E633F60BD8D2");
-        data.put("SelectDate","19/01/2018");
+        data.put("SelectDate",reportDate);
         
-        return data;
+        GenericUrl url = new GenericUrl(Constantes.URL_LINEAS);
+        HttpRequest requestGoogle = requestFactory.buildPostRequest(url, new UrlEncodedContent(data));
+        GenericJson json = requestGoogle.execute().parseAs(GenericJson.class);
+        
+        return json;
     }
-    
 }

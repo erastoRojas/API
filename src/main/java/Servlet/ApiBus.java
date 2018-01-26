@@ -1,9 +1,6 @@
 package Servlet;
 
-import Utils.Constantes;
-import com.google.api.client.http.GenericUrl;
 import com.google.api.client.json.GenericJson;
-import com.google.api.client.util.GenericData;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
@@ -25,8 +22,8 @@ public class ApiBus extends HttpServlet {
             throws ServletException, IOException {
         
         apiServicios as = new apiServicios(); 
-        GenericData data = new GenericData();
         String op = request.getParameter("op");
+        GenericJson json;
         
         if(op != null){
             
@@ -37,9 +34,7 @@ public class ApiBus extends HttpServlet {
                     String parada = request.getParameter("parada");
                     String nParada = request.getParameter("nParada");
                     
-                    GenericUrl url = new GenericUrl(Constantes.URL_PARADAS);
-                    GenericJson json = as.requestGoogle(url,as.dataParadas(parada));
-                    
+                    json = as.dataParadas(parada);//llamada a servicios
                     ArrayList stops = (ArrayList) json.get("resultValues");
                     
                     request.setAttribute("nParada", nParada);
@@ -53,9 +48,7 @@ public class ApiBus extends HttpServlet {
                     String idParada = request.getParameter("idParada");
                     String nombreParada = request.getParameter("nombreParada");
                     
-                    url = new GenericUrl(Constantes.URL_TIEMPO);
-                    json = as.requestGoogle(url,as.dataTiempo(idParada));
-                    
+                    json = as.dataTiempo(idParada);//llamada a servicios
                     stops = (ArrayList) json.get("arrives");
                     
                     request.setAttribute("paradas", stops);
@@ -66,9 +59,8 @@ public class ApiBus extends HttpServlet {
             }
 
         }else{
-            GenericUrl url = new GenericUrl(Constantes.URL_LINEAS);
-            GenericJson json = as.requestGoogle(url,as.dataLineas());
             
+            json = as.dataLineas();//llamada a servicios
             ArrayList stops = (ArrayList) json.get("resultValues");
            
             request.setAttribute("paradas", stops);

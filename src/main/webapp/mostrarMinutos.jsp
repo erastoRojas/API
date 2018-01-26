@@ -25,7 +25,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Segundos restantes</th>
+                        <th>Minutos restantes</th>
                         <th>Distancia</th>
                     </tr>
                 </thead>
