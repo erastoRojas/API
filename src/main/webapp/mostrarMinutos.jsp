@@ -35,7 +35,7 @@
                 </thead>
                 <tbody>
                 <c:forEach items="${paradas}" var="parada"> 
-                    <tr onclick="location='http://localhost:8080/API/apiBus?'" style="cursor:pointer">
+                    <tr style="cursor:pointer">
                         <td>
                             
                         <script>
@@ -49,9 +49,15 @@
                                 var hora = (d.getHours()==0)?23:d.getHours()-1;
                                 var hora = (hora<9)?"0"+hora:hora;
                                 var minuto = d.getMinutes();
-                                var segundo = (d.getSeconds()<9)?"0"+d.getSeconds():d.getSeconds();
-                              
-                                document.write(minuto+":"+segundo+" min"); 
+                                if(d.getSeconds()<10){}
+                                
+                                if(d.getSeconds()<10 && minuto < 1){
+                                     var segundo = "0"+d.getSeconds();
+                                     document.write(minuto+":"+segundo+" seg");
+                                }else{
+                                    var segundo = (d.getSeconds()<10)?"0"+d.getSeconds():d.getSeconds();
+                                    document.write(minuto+":"+segundo+" min"); 
+                                }
                             }else{
                                 document.write(segundos+" seg"); 
                             }
