@@ -21,7 +21,11 @@
     <body>
             
         <div class="container">
-            <h1>Ruta: ${nombreParada}</h1> 
+            
+            <div class="row">
+                <div class="col-sm-8"><h1>Ruta: ${nombreParada}</h1> </div>
+                <div class="col-sm4" style="padding-top:20px;text-align: right;"><p><a href="http://localhost:8080/API/apiBus?op=verParadas" style="font-size: 25px">Volver</a></p></div>
+            </div>
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -44,9 +48,8 @@
                                 var d=new Date(segundos*1000);
                                 var hora = (d.getHours()==0)?23:d.getHours()-1;
                                 var hora = (hora<9)?"0"+hora:hora;
-                                var minuto = (d.getMinutes()<9)?"0"+d.getMinutes():d.getMinutes();
+                                var minuto = d.getMinutes();
                                 var segundo = (d.getSeconds()<9)?"0"+d.getSeconds():d.getSeconds();
-                              
                               
                                 document.write(minuto+":"+segundo+" min"); 
                             }else{

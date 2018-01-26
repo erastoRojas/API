@@ -21,7 +21,10 @@
     <body>
             
         <div class="container">
-            <h1>Linea ${nParada}</h1> 
+            <div class="row">
+                <div class="col-sm-8"><h1>Linea ${nParada}</h1> </div>
+                <div class="col-sm4" style="padding-top:20px;text-align: right;"><p><a href="http://localhost:8080/API/apiBus?" style="font-size: 25px">Volver</a></p></div>
+            </div>
             <table class="table table-hover">
                 <thead>
                     <tr>
