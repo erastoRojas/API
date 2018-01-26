@@ -44,7 +44,7 @@
                             if((segundos/60) > 60){
                                 document.write("+60 min"); 
                             
-                            }else if(segundos > 10){
+                            }else if(segundos > 60){
                                 var d=new Date(segundos*1000);
                                 var hora = (d.getHours()==0)?23:d.getHours()-1;
                                 var hora = (hora<9)?"0"+hora:hora;
